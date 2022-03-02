@@ -14,31 +14,73 @@ import Observers.ObserverB;
 import Observers.ObserverC;
 
 public class Game implements IGame {
-	private static final int QuarterLength = 100;
-	private int timerCounter;
-	private Timer timer4thQuarterUpdate;
-	private Timer scoringTimer;
-	private List<Integer> pointsList = Arrays.asList(2, 3);
-	private List<Integer> teamsList = Arrays.asList(1, 2);
+	private static final int QuarterLength = 10;
 	Scoring scoring;
 	ObserverA observerA;
 	ObserverB observerB;
 	ObserverC observerC;
 	private String teamOneName;
 	private String teamTwoName;
-	private boolean gamePlaying;
+	private String location;
+	private Timer timer4thQuarterUpdate;
+	private Timer scoringTimer;
+	private int timerCounter;
 	
 	public Game() throws Exception {
-		gamePlaying = false;
 		observerA = new ObserverA();
 		observerB = new ObserverB();
 		observerC = new ObserverC();
-
 		scoring = new Scoring();
 		scoring.registerObserver(observerA);
 		scoring.registerObserver(observerB);
 		scoring.registerObserver(observerC);
 		
+		simulateGame();
+	}
+
+
+	@Override
+	public void startGame() throws Events.Exception {
+		if((this.teamOneName != null) && (this.teamTwoName != null) && (this.location != null)) {
+			timer4thQuarterUpdate.start();
+			scoringTimer.start();
+		}else {
+			throw new Events.Exception("Teams and/or locaiton is not selected");
+		}
+	}
+	
+	@Override
+	public void startGame(String teamOne, String teamTwo, String location) {
+		this.teamOneName = teamOne;
+		this.teamTwoName = teamTwo;
+		this.location = location;
+		scoring.setScoringData(teamOneName, teamTwoName, location);
+		timer4thQuarterUpdate.start();
+		scoringTimer.start();
+	}
+
+	@Override
+	public void pauseGame() {
+		timer4thQuarterUpdate.stop();
+		scoringTimer.stop();
+	}
+
+	@Override
+	public String printCurrentScore() {
+		return scoring.currentScoreToString();
+	}
+
+	@Override
+	public void printTableOfScores() {
+		observerB.displayEventHistory();
+	}
+
+	@Override
+	public String printPrediction() {
+		return observerA.getPredication();
+	}
+
+	public void simulateGame() throws Exception {
 		try {
 			this.timer4thQuarterUpdate = new Timer(QuarterLength, new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
@@ -48,14 +90,15 @@ public class Game implements IGame {
 					if (timerCounter % 4 == 0) {
 						System.out.println("Game Ended");
 						pauseGame();
-						gamePlaying = false;
+						scoring.gameEnd();
 					}
 				}
 			});
 
 			this.scoringTimer = new Timer(1, new ActionListener() {
 				public void actionPerformed(ActionEvent evt) {
-
+					List<Integer> pointsList = Arrays.asList(2, 3);
+					List<Integer> teamsList = Arrays.asList(1, 2);
 					Random rand = new Random();
 					int points = pointsList.get(rand.nextInt(pointsList.size()));
 					int team = teamsList.get(rand.nextInt(teamsList.size()));
@@ -73,41 +116,6 @@ public class Game implements IGame {
 		} catch (Exception e) {
 			throw new Exception("Timer exception error");
 		}
-	}
-
-	@Override
-	public void startGame(String teamOne, String teamTwo) {
-		this.teamOneName = teamOne;
-		this.teamTwoName = teamTwo;
-		scoring.setTeamNames(teamOne, teamTwo);
-		timer4thQuarterUpdate.start();
-		scoringTimer.start();
-	}
-
-	@Override
-	public void pauseGame() {
-		timer4thQuarterUpdate.stop();
-		scoringTimer.stop();
-	}
-
-	@Override
-	public String printCurrentScore() {
-		return scoring.currentScoreToString();
-	}
-
-	@Override
-	public String printTableOfScores() {
-		return null;
-	}
-
-	@Override
-	public String printPrediction() {
-		return observerA.getPredication();
-	}
-
-	@Override
-	public boolean gameStatus() {
-		return gamePlaying;
 	}
 	
 }

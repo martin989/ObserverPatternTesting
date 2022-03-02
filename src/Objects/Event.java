@@ -7,6 +7,7 @@ public class Event {
 	private String location;
 	private String teamWon;
 	private List<Point> points;
+	
 	public Event(String location, String teamWon, List<Point> points)
 	{
 		this.location = location;
@@ -31,6 +32,4 @@ public class Event {
 	public void setPoints(List<Point> points) {
 		this.points = points;
 	}
-	
-	
 }

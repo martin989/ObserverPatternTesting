@@ -9,5 +9,5 @@ public interface IObserver {
 	public void update(List<Point> points, String teamOneName, String teamTwoName, int teamOneScore, int teamTwoScore);
 
 	public void gameEnded(ArrayList<Point> points, String teamOneName, String teamTwoName, int teamOneScore,
-			int teamTwoScore);
+			int teamTwoScore,String location);
 }

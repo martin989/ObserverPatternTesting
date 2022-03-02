@@ -20,8 +20,8 @@ public class ObserverC implements IObserver {
 
 	@Override
 	public void gameEnded(ArrayList<Point> points, String teamOneName, String teamTwoName, int teamOneScore,
-			int teamTwoScore) {
-    	System.out.println("\\nObserver C");
+			int teamTwoScore,String location) {
+    	System.out.println("\nObserver C");
     	if(teamOneScore > teamTwoScore) {
     		System.out.println("Team " + teamOneName + " won over " + teamTwoName + " by " + (teamOneScore - teamTwoScore));
     	}else {

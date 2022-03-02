@@ -18,7 +18,7 @@ public class ObserverA implements IObserver{
 
 	@Override
 	public void gameEnded(ArrayList<Point> points, String teamOneName, String teamTwoName, int teamOneScore,
-			int teamTwoScore) {
+			int teamTwoScore,String location) {
 
 	}
 

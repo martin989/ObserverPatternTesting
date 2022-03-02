@@ -1,10 +1,12 @@
 package Interfaces;
 
+import Events.Exception;
+
 public interface IGame {
-	public void startGame(String teamOne, String teamTwo);
+	public void startGame(String teamOne, String teamTwo, String location);
+	public void startGame() throws Exception;
 	public void pauseGame();
 	public String printCurrentScore();
-	public String printTableOfScores();
+	public void printTableOfScores();
 	public String printPrediction();
-	public boolean gameStatus();
 }

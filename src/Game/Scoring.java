@@ -11,19 +11,52 @@ public class Scoring implements Subject
 {
 	ArrayList<IObserver> observerList;
 	ArrayList<Point> points;
-	private int teamOneScore;
-	private int teamTwoScore;
+	private int teamOneScore = 0;
+	private int teamTwoScore = 0;
 	private String teamOneName;
 	private String teamTwoName;	
+	private String location;
 	
     public Scoring() {
         observerList = new ArrayList<IObserver>();
         points = new ArrayList<Point>();
-        teamOneScore = 0;
-        teamTwoScore = 0;
     }
     
+    public void dataChanged()
+    {
+        notifyObservers();
+    }
     
+    public void gameEnd() {
+        for (Iterator<IObserver> it = observerList.iterator(); it.hasNext();)
+          {
+        	IObserver o = it.next();
+        	o.gameEnded(points,teamOneName,teamTwoName,teamOneScore,teamTwoScore,location);
+          }         
+    }
+    
+    public void teamScored(String team, int time, int points) throws Exception {
+    	Point point = new Point(team, time, points);
+    	this.points.add(point);
+    	if(team == teamOneName) {
+    		teamOneScore = teamOneScore + points;
+    	}
+    	else {
+    		teamTwoScore = teamTwoScore + points;
+    	}
+    }
+
+	public String currentScoreToString() {
+		return "\n\n" + teamOneName + " has " + teamOneScore + " and " + teamTwoName + " has " + teamTwoScore + "\n\n";
+	}
+	
+	public void setScoringData(String teamOneName, String teamTwoName, String location) {
+        this.teamOneName = teamOneName;
+        this.teamTwoName = teamTwoName;
+        this.location = location;
+	}
+	
+	//Implemented Methods
     @Override
     public void registerObserver(IObserver o) {
         observerList.add(o);
@@ -44,38 +77,4 @@ public class Scoring implements Subject
             o.update(points,teamOneName,teamTwoName,teamOneScore,teamTwoScore);
         }
     }
-    
-    public void dataChanged()
-    {
-        notifyObservers();
-    }
-    
-    public void gameEnd() {
-        for (Iterator<IObserver> it = observerList.iterator(); it.hasNext();)
-          {
-        	IObserver o = it.next();
-        	o.gameEnded(points,teamOneName,teamTwoName,teamOneScore,teamTwoScore);
-          }         
-    }
-    
-    public void teamScored(String team, int time, int points) throws Exception {
-    	Point point = new Point(team, time, points);
-    	this.points.add(point);
-    	if(team == teamOneName) {
-    		teamOneScore = teamOneScore + points;
-    	}
-    	else {
-    		teamTwoScore = teamTwoScore + points;
-    	}
-    }
-
-    
-	public void setTeamNames(String teamOneName, String teamTwoName) {
-		this.teamOneName = teamOneName;
-		this.teamTwoName = teamTwoName; 
-	}
-	
-	public String currentScoreToString() {
-		return "\n\n" + teamOneName + " has " + teamOneScore + " and " + teamTwoName + " has " + teamTwoScore + "\n\n";
-	}
 }
